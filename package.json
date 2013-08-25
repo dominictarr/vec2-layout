@@ -1,11 +1,11 @@
 {
-  "name": "vec2-tile-layout",
-  "description": "",
+  "name": "vec2-layout",
+  "description": "layout with vec2",
   "version": "0.0.0",
-  "homepage": "https://github.com/dominictarr/vec2-tile-layout",
+  "homepage": "https://github.com/dominictarr/vec2-layout",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/vec2-tile-layout.git"
+    "url": "git://github.com/dominictarr/vec2-layout.git"
   },
   "dependencies": {
   },
