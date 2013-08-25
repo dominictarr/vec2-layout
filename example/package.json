@@ -1,0 +1,20 @@
+{
+  "name": "example",
+  "description": "",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dominictarr/example",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/example.git"
+  },
+  "dependencies": {
+    "vec2-dom": "~1.1.1",
+    "hyperscript": "~1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "set -e; for t in test/*.js; do node $t; done"
+  },
+  "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
+  "license": "MIT"
+}
