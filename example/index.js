@@ -12,6 +12,7 @@ function fruit(name, colour) {
 document.head.appendChild(
   h('style', 
     '* { margin: 0px; padding: 0px}',
+    '* { font-family: Comic Sans MS; font-size: 20px }',
     '.fruit :hover { border: red 1px solid }',
     '.fruit { display: block }'
   )
