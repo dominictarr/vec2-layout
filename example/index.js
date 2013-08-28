@@ -14,7 +14,7 @@ document.head.appendChild(
     '* { margin: 0px; padding: 0px}',
     '* { font-family: Comic Sans MS; font-size: 20px }',
     '.fruit :hover { border: red 1px solid }',
-    '.fruit { display: block }'
+    '.fruit { display: block; -webkit-transition: left 0.3s, width 0.3s, top 0.3s, height 0.3s; }'
   )
 )
 
@@ -26,7 +26,10 @@ document.body.appendChild(
     fruit('Banana',     'yellow'),
     fruit('Cherry',     'magenta'),
     fruit('Durian',     'green'),
-    fruit('Elderberry', 'blue')
+    fruit('Elderberry', 'blue'),
+    fruit('Fig',        'lightgreen'),
+    fruit('Grapefruit', 'orange'),
+    fruit('horseradish', 'maroon')
   )
 )
 
@@ -41,6 +44,8 @@ screen.change(function () {
   main.rec.size.set(screen)
 })
 
+var old = []
+
 var toggle = true
 document.body.appendChild(
   h('div', {
@@ -51,14 +56,21 @@ document.body.appendChild(
 //        width: '20px', height: '20px'
       },
     },
-    h('button', 'rotate', {
+    h('button', 'push', {
       href: '#', onclick: function () {
-        main.appendChild(main.firstChild)
+        if(old.length)
+          main.appendChild(old.pop())
       }
     }),
-    h('button', 'toggle',{
+    h('button', 'pop', {
       href: '#', onclick: function () {
-        main.layout((toggle = !toggle) ? layout.tile : layout.grid) 
+        if(main.children.length)
+          old.push(main.removeChild(main.lastChild))
+      }
+    }),
+    h('button', 'rotate', {
+      href: '#', onclick: function () {
+         main.layout.rotate()
       }
     })
   )

@@ -1,19 +1,28 @@
-var tile = require('./tile')
+var grid = require('./grid')
 var vdom = require('vec2-dom')
 
 var exports = module.exports = function (element, layout) {
-  layout = layout || tile
+  layout = layout || grid
 
   var root = element.rec = element.rec || vdom.absolute(element, true)
 
+  function initChildren () {
+    return [].map.call(element.children, function (e) {
+      return e.rec = e.rec || vdom.absolute(e, true)
+    })
+  }
+  var children = initChildren()
   function relayout (_layout) {
     if('function' === typeof _layout)
       layout = _layout
-    console.log('layout', layout)
-    var children = [].map.call(element.children, function (e) {
-      return e.rec = e.rec || vdom.absolute(e, true)
-    })
+    if(children.length != element.children.length)
+      children = initChildren()
     layout(children, root)
+  }
+
+  relayout.rotate = function () {
+    children.push(children.shift())
+    relayout()
   }
 
   var mo = new MutationObserver(relayout)
@@ -25,5 +34,4 @@ var exports = module.exports = function (element, layout) {
   return element
 }
 
-exports.tile = tile
-exports.grid = require('./grid')
+exports.grid = grid
