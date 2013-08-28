@@ -1,67 +1,50 @@
-/**
- * Grid (a.k.a fair)
- *
- *  +----------+----------+ +----------+----------+
- *  |          |          | |          |          |
- *  |          |          | |          |          |
- *  |          |          | |          |          |
- *  |          |          | +----------+----------+
- *  |          |          | |                     |
- *  |          |          | |                     |
- *  |          |          | |                     |
- *  +---------------------+ +---------------------+
- *        2 windows               3 windows
- *
- *  +----------+----------+ +------+-------+------+
- *  |          |          | |      |       |      |
- *  |          |          | |      |       |      |
- *  |          |          | |      |       |      |
- *  +----------+----------+ +------+---+---+------+
- *  |          |          | |          |          |
- *  |          |          | |          |          |
- *  |          |          | |          |          |
- *  +---------------------+ +---------------------+
- *        4 windows               5 windows
- */
+function cols (n) {
+  return Math.ceil(Math.sqrt(n)) 
+}
 
-module.exports = function (elements, screen, _) {
-  var windows = elements;
-  var length = elements.length
-  if(!length) return
-
-  var rows, cols;
-  for(cols = 0; cols <= length/2; cols++) {
-    if(cols * cols >= length) {
-      break;
-    }
+function rows(n) {
+  var a = [], t = 0
+  var c = cols(n)
+  for(var i = 0; i < c; i++) {
+    var r = Math.floor((n - t) / (c - i))
+    a.push(r)
+    t += r
   }
-  rows = ((cols && (cols -1) * cols >= length) ? cols - 1 : cols);
+  return a
+}
 
-  // cells
-  var cellHeight = screen.size.y / (rows ? rows : 1);
-  var cellWidth = screen.size.x / (cols ? cols : 1);
+function layout(n, each) {
+  var i = 0
+  rows(n).forEach(function (r, c, a) {
+    //column c, e rows in this col.
+    for(var j = 0; j < r; j++)
+      each(i++, j, c, r, a.length)
+  })
+}
 
-  elements.forEach(function(rec, index) {
-    if(rows > 1 && index == (rows*cols) - cols
-       && (length - index) <= ( length)
-      ) {
-      cellWidth = screen.size.x / (length - index);
-    }
+module.exports = function (recs, screen) {
+  layout(recs.length, function (i, j, c, r, C) {
+    //i (cell in table)
+    //j (cell in col)
+    //c (col  in table)
+    //r (rows in col)
+    //C (total cols)
+    var w = screen.size.x / C
+    var h = screen.size.y / r
+    //place odd columns in reverse order,
+    //this counts the panes in a snaking shape
+    //which feels more natural when they move,
+    //because each pane moves less.
 
-    var newX = screen.x + ~~(index % cols) * cellWidth;
-    var newY = screen.y + ~~(index / cols) * cellHeight;
-    rec.set(Math.floor(newX), Math.floor(newY));
+    //except for moving first to last.
+    //I don't think this will be a problem,
+    //because I'm only using rotate for testing.
+    //in practice, you'll drag panes into position.
 
-    // adjust height/width of last row/col's windows
-    var adjustHeight = ( (index >= cols * (rows -1) ) ?  screen.size.y - cellHeight * rows : 0 );
-    var adjustWidth = 0;
-    if(rows > 1 && index == length-1 && (length - index) < (length % cols) ) {
-      adjustWidth = screen.width - cellWidth * (length % cols);
-    } else {
-      adjustWidth = ( ((index + 1) % cols == 0 ) ? screen.size.x - cellWidth * cols : 0 );
-    }
-
-    rec.size.set(~~(cellWidth+adjustWidth), ~~(cellHeight+adjustHeight) );
-  });
-  return elements
+    //some numbers might make more sense to layout
+    //clockwise
+    var o = c % 2 ? r - j - 1 : j
+    recs[i].set(w*c, h*o).size.set(w, h)
+    console.log('['+i+']', 'x:'+w*c, 'y:'+h*j)
+  })
 }
