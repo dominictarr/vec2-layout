@@ -22,7 +22,7 @@ function layout(n, each) {
   })
 }
 
-module.exports = function (recs, screen) {
+module.exports = function (recs, screen, order) {
   layout(recs.length, function (i, j, c, r, C) {
     //i (cell in table)
     //j (cell in col)
@@ -43,8 +43,8 @@ module.exports = function (recs, screen) {
 
     //some numbers might make more sense to layout
     //clockwise
-    var o = c % 2 ? r - j - 1 : j
+    var o = order && c % 2 ? r - j - 1 : j
     recs[i].set(w*c, h*o).size.set(w, h)
-    console.log('['+i+']', 'x:'+w*c, 'y:'+h*j)
+    //console.log('['+i+']', 'x:'+w*c, 'y:'+h*j)
   })
 }
